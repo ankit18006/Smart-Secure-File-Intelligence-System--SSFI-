@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <div class="lg:col-span-1 space-y-6">
-        <div class="bg-white/5 border border-white/10 p-8 rounded-3xl shadow-xl">
+    <div class="lg:col-span-1">
+        <div class="bg-white/5 border border-white/10 p-8 rounded-3xl shadow-xl sticky top-24">
             <h3 class="text-2xl font-bold mb-4">Secure Upload</h3>
             <form action="/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
-                <div class="border-2 border-dashed border-white/10 rounded-2xl p-6 text-center hover:border-emerald-500/50 transition cursor-pointer">
-                    <input type="file" name="file" class="hidden" id="fileInput" onchange="this.form.submit()">
-                    <label for="fileInput" class="cursor-pointer">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-emerald-500 mb-2"></i>
-                        <p class="text-sm text-slate-400">Click to upload or drag & drop</p>
-                    </label>
+                <div class="border-2 border-dashed border-white/10 rounded-2xl p-6 text-center hover:border-emerald-500/50 transition cursor-pointer relative">
+                    <input type="file" name="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="this.form.submit()">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-emerald-500 mb-2"></i>
+                    <p class="text-sm text-slate-400">Click or Drag & Drop</p>
                 </div>
             </form>
         </div>
@@ -21,7 +19,8 @@
             <table class="w-full text-left">
                 <thead class="bg-white/5 text-slate-400 text-xs uppercase tracking-widest">
                     <tr>
-                        <th class="px-6 py-4">File Name</th>
+                        <th class="px-6 py-4">Secure Object</th>
+                        <th class="px-6 py-4">Status</th>
                         <th class="px-6 py-4 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -29,10 +28,17 @@
                     {% for file in files %}
                     <tr class="hover:bg-white/[0.02]">
                         <td class="px-6 py-4 font-mono text-sm">{{ file }}</td>
-                        <td class="px-6 py-4 text-right space-x-3">
-                            <button class="text-emerald-400 hover:text-emerald-300"><i class="fas fa-lock"></i></button>
-                            <button class="text-sky-400 hover:text-sky-300"><i class="fas fa-history"></i></button>
+                        <td class="px-6 py-4">
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded-full font-bold">AES-PROTECTED</span>
                         </td>
+                        <td class="px-6 py-4 text-right space-x-3">
+                            <a href="/download/{{ file }}" class="text-sky-400 hover:text-sky-300"><i class="fas fa-download"></i></a>
+                            <a href="/delete/{{ file }}" class="text-red-400 hover:text-red-300" onclick="return confirm('Secure Delete?')"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="px-6 py-10 text-center text-slate-500 italic">No files in secure storage.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
