@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-8">
+    <div class="flex justify-between items-end">
+        <h2 class="text-3xl font-bold"><i class="fas fa-user-shield text-purple-400 mr-2"></i> Global Audit Trail</h2>
+        <button class="bg-purple-500/20 text-purple-400 px-4 py-2 rounded-lg border border-purple-500/50 hover:bg-purple-500 hover:text-white transition">Export PDF Report</button>
+    </div>
+
+    <div class="bg-white/5 rounded-3xl border border-white/10 overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-white/5 text-slate-400 text-sm uppercase">
+                <tr>
+                    <th class="p-4 text-left">Timestamp</th>
+                    <th class="p-4 text-left">Action</th>
+                    <th class="p-4 text-left">Target File</th>
+                    <th class="p-4 text-left">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for audit in audits %}
+                <tr class="hover:bg-white/5 transition">
+                    <td class="p-4 text-slate-400 text-sm">{{ audit.timestamp }}</td>
+                    <td class="p-4 font-semibold text-sky-400">{{ audit.action }}</td>
+                    <td class="p-4">{{ audit.filename }}</td>
+                    <td class="p-4"><span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Success</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

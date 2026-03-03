@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h2 class="text-3xl font-bold text-indigo-400"><i class="fas fa-history mr-2"></i> Version Control Center</h2>
+        <span class="bg-indigo-500/10 text-indigo-400 px-4 py-1 rounded-full border border-indigo-500/20 text-sm">System Snapshots</span>
+    </div>
+
+    <div class="bg-white/5 rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+        <table class="w-full text-left">
+            <thead class="bg-white/5 text-slate-400 text-xs uppercase tracking-widest">
+                <tr>
+                    <th class="p-5">Version Timestamp</th>
+                    <th>Original File</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for v in versions %}
+                <tr class="hover:bg-white/5 transition group">
+                    <td class="p-5 font-mono text-indigo-300">{{ v.split('_')[0] }}</td>
+                    <td class="text-slate-300">{{ "_".join(v.split('_')[1:]) }}</td>
+                    <td class="p-5">
+                        <a href="/rollback/{{ v }}" class="bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center w-fit gap-2">
+                            <i class="fas fa-undo-alt"></i> ROLLBACK
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {% if not versions %}
+        <div class="py-20 text-center text-slate-500">
+            <i class="fas fa-box-open text-4xl mb-4"></i>
+            <p>No snapshots found. Click 'Save Version' in Dashboard to create one.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

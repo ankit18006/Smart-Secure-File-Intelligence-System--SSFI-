@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-8 animate-in fade-in duration-700">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-sky-600/20 to-transparent p-8 rounded-3xl border border-white/10">
+        <div>
+            <h2 class="text-4xl font-black tracking-tighter text-white">COMMAND <span class="text-sky-400">CENTER</span></h2>
+            <p class="text-slate-400 font-medium">SSFI Enterprise Intelligence System — Hello, Ankit Shukla</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="/backup-now" class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-2xl font-bold transition flex items-center gap-2 shadow-lg shadow-sky-500/20">
+                <i class="fas fa-cloud-arrow-up"></i> Full Backup
+            </a>
+        </div>
+    </div>
+
+    <div class="glass-card p-1 rounded-3xl">
+        <form action="/upload" method="POST" enctype="multipart/form-data" class="bg-[#0f172a] p-8 rounded-[calc(1.5rem-1px)] border border-dashed border-white/20 hover:border-sky-500/50 transition group text-center">
+            <input type="file" name="file" id="fileInput" class="hidden" onchange="this.form.submit()">
+            <label for="fileInput" class="cursor-pointer">
+                <div class="bg-sky-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
+                    <i class="fas fa-file-import text-2xl text-sky-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-200">Inject New Intelligence</h3>
+                <p class="text-slate-500 mt-1 text-sm">Drag & drop or click to browse files for secure processing</p>
+            </label>
+        </form>
+    </div>
+
+    <div class="glass-card rounded-3xl overflow-hidden border border-white/10">
+        <div class="px-8 py-5 border-b border-white/10 flex justify-between items-center bg-white/5">
+            <h3 class="font-bold text-lg">Active Intelligence Repository</h3>
+            <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">Live Storage / Uploads</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-white/5 text-slate-400 text-xs uppercase font-bold">
+                    <tr>
+                        <th class="p-5">Intelligence Name</th>
+                        <th>Classification</th>
+                        <th>Security Level</th>
+                        <th class="p-5 text-right">Operational Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for file in files %}
+                    <tr class="hover:bg-white/5 transition-colors group">
+                        <td class="p-5">
+                            <div class="flex items-center gap-3">
+                                <i class="far fa-file-code text-sky-400 text-lg"></i>
+                                <span class="font-medium text-slate-200">{{ file }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase text-slate-400">
+                                {{ file.split('.')[-1] }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+                                <span class="text-xs text-emerald-400 font-bold uppercase tracking-tighter">Safe Mode</span>
+                            </div>
+                        </td>
+                        <td class="p-5 text-right space-x-2">
+                            <a href="/save-version/{{ file }}" class="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-white transition inline-block" title="Version Snapshot">
+                                <i class="fas fa-camera"></i>
+                            </a>
+                            <a href="/encrypt/{{ file }}" class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-white transition inline-block" title="AES Encrypt">
+                                <i class="fas fa-shield-halved"></i>
+                            </a>
+                            {% if file.endswith('.csv') %}
+                            <a href="/analyzer?file={{ file }}" class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition inline-block" title="Deep Analysis">
+                                <i class="fas fa-chart-pie"></i>
+                            </a>
+                            {% endif %}
+                            <button class="p-2.5 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition inline-block">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if not files %}
+            <div class="py-20 text-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/4076/4076444.png" class="w-20 mx-auto opacity-20 mb-4 grayscale" alt="empty">
+                <p class="text-slate-500 font-medium italic">No intelligence files detected in the secure zone.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
