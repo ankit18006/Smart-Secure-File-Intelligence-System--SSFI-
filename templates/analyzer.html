@@ -1,124 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
-
 <div class="space-y-8 animate-in fade-in duration-700">
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-<div>
-<h2 class="text-3xl font-bold text-emerald-400"><i class="fas fa-microscope mr-2"></i> Intelligence Analyzer</h2>
-<p class="text-slate-400 mt-1">Select a dataset to extract statistical insights.</p>
-</div>
-
-    <form action="/analyzer" method="GET" class="flex items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/10">
-        <label class="ml-3 text-sm text-slate-400 font-medium">Select Intelligence:</label>
-        <select name="file" class="bg-[#1e293b] text-white text-sm rounded-xl px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none border-none cursor-pointer">
-            <option value="" disabled selected>Choose CSV...</option>
-            {% for f in csv_files %}
-            <option value="{{ f }}">{{ f }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
-            Analyze Now
-        </button>
-    </form>
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="glass-card p-6 rounded-3xl border border-white/10 bg-white/5">
-        <div class="flex items-center gap-4 mb-3">
-            <div class="bg-emerald-500/20 p-3 rounded-xl text-emerald-400"><i class="fas fa-database"></i></div>
-            <h3 class="text-sm text-slate-400 uppercase tracking-widest">Available Files</h3>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-3xl font-bold text-emerald-400"><i class="fas fa-microscope mr-2"></i> Intelligence Analyzer</h2>
+            <p class="text-slate-400 mt-1">Select a dataset to extract statistical insights.</p>
         </div>
-        <p class="text-4xl font-mono font-bold">{{ csv_files|length }}</p>
+        <form action="/analyzer" method="GET" class="flex items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/10">
+            <select name="file" class="bg-[#1e293b] text-white text-sm rounded-xl px-4 py-2 outline-none cursor-pointer">
+                <option value="" disabled selected>Choose CSV...</option>
+                {% for f in csv_files %}
+                <option value="{{ f }}">{{ f }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold transition-all">Analyze Now</button>
+        </form>
     </div>
-    <div class="glass-card p-6 rounded-3xl border border-white/10 bg-white/5">
-        <div class="flex items-center gap-4 mb-3">
-            <div class="bg-sky-500/20 p-3 rounded-xl text-sky-400"><i class="fas fa-bolt"></i></div>
-            <h3 class="text-sm text-slate-400 uppercase tracking-widest">Processing</h3>
-        </div>
-        <p class="text-4xl font-mono font-bold">FAST</p>
-    </div>
-    <div class="glass-card p-6 rounded-3xl border border-white/10 bg-white/5">
-        <div class="flex items-center gap-4 mb-3">
-            <div class="bg-purple-500/20 p-3 rounded-xl text-purple-400"><i class="fas fa-chart-line"></i></div>
-            <h3 class="text-sm text-slate-400 uppercase tracking-widest">Visual Mode</h3>
-        </div>
-        <p class="text-4xl font-mono font-bold">Charts.js</p>
-    </div>
-</div>
 
-{% if stats %}
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="bg-white/5 p-6 rounded-3xl border border-white/10">
-        <h3 class="text-slate-300 font-bold mb-4">Distribution Chart</h3>
-        <canvas id="csvPieChart" height="200"></canvas>
-    </div>
-    <div class="bg-white/5 p-6 rounded-3xl border border-white/10">
-        <h3 class="text-slate-300 font-bold mb-4">Statistical Metrics</h3>
-        <canvas id="csvBarChart" height="200"></canvas>
-    </div>
-</div>
-{% endif %}
-
-<div class="bg-white/5 rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
-    <div class="p-6 overflow-x-auto min-h-[400px]">
-        {% if stats %}
-            <div class="custom-data-table">{{ stats | safe }}</div>
-        {% else %}
-            <div class="flex flex-col items-center justify-center py-20 text-center">
-                <div class="bg-white/5 w-20 h-20 rounded-full flex items-center justify-center mb-4">
-                    <i class="fas fa-folder-open text-3xl text-slate-600"></i>
+    <div class="bg-white/5 rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+        <div class="p-6 overflow-x-auto min-h-[400px]">
+            {% if stats %}
+                <div class="custom-data-table">{{ stats | safe }}</div>
+            {% else %}
+                <div class="flex flex-col items-center justify-center py-20 text-center text-slate-500">
+                    <i class="fas fa-folder-open text-4xl mb-4"></i>
+                    <h4 class="text-xl font-semibold">No Data Analyzed</h4>
                 </div>
-                <h4 class="text-xl font-semibold text-slate-400">No Intelligence Selected</h4>
-                <p class="text-slate-500 mt-2">Select a CSV file from the dropdown above.</p>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-{% if stats %}
-new Chart(document.getElementById('csvPieChart').getContext('2d'), {
-type: 'doughnut',
-data: {
-labels: ['Mean', 'Std Dev', 'Min', 'Max'],
-datasets: [{
-data: [40, 20, 15, 25],
-backgroundColor: ['#10b981', '#0ea5e9', '#6366f1', '#f59e0b'],
-borderWidth: 0
-}]
-},
-options: { plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }
-});
-
-new Chart(document.getElementById(&#39;csvBarChart&#39;).getContext(&#39;2d&#39;), {
-    type: &#39;bar&#39;,
-    data: {
-        labels: [&#39;Count&#39;, &#39;Mean&#39;, &#39;Std&#39;, &#39;Max&#39;],
-        datasets: [{
-            label: &#39;Values&#39;,
-            data: [100, 75, 45, 90],
-            backgroundColor: &#39;#0ea5e9&#39;,
-            borderRadius: 5
-        }]
-    },
-    options: {
-        scales: {
-            y: { grid: { color: &#39;rgba(255,255,255,0.05)&#39; }, ticks: { color: &#39;#64748b&#39; } },
-            x: { ticks: { color: &#39;#64748b&#39; } }
-        },
-        plugins: { legend: { display: false } }
-    }
-});
-{% endif %}
-</script>
 
 <style>
-.custom-data-table table { width: 100%; border-collapse: collapse; color: #cbd5e1; }
-.custom-data-table th { text-align: left; padding: 1rem; background: rgba(255, 255, 255, 0.05); color: #34d399; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
-.custom-data-table td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-family: monospace; }
+    .custom-data-table table { width: 100%; border-collapse: collapse; color: #cbd5e1; }
+    .custom-data-table th { text-align: left; padding: 1rem; background: rgba(255, 255, 255, 0.05); color: #34d399; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
+    .custom-data-table td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-family: 'JetBrains Mono', monospace; }
 </style>
-
 {% endblock %}
