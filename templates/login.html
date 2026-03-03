@@ -1,24 +1,22 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login | SSFI Enterprise</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<title>Master Authentication</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#020617] h-screen flex items-center justify-center">
-    <div class="w-full max-w-md p-8">
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-black text-white tracking-tighter">SSFI <span class="text-emerald-500">LOG-IN</span></h1>
-            <p class="text-slate-500 mt-2">Enter Master Credentials</p>
-        </div>
-        
-        <form action="/login" method="POST" class="space-y-4">
-            <input type="text" name="username" placeholder="Master Identity" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 transition">
-            <input type="password" name="password" placeholder="Access Key" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 transition">
-            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl text-white font-bold text-lg shadow-lg shadow-emerald-500/20 transition-all">
-                Authenticate
-            </button>
-        </form>
-    </div>
+<body class="bg-[#020617] min-h-screen flex items-center justify-center p-6">
+<div class="w-full max-w-md bg-white/5 p-10 rounded-[40px] border border-white/10 shadow-2xl">
+<div class="text-center mb-10">
+<h1 class="text-4xl font-black text-white italic tracking-tighter">SSFI <span class="text-emerald-500">AUTH</span></h1>
+<p class="text-slate-500 text-sm mt-2 font-bold uppercase tracking-widest">Enterprise Access</p>
+</div>
+<form action="/login" method="POST" class="space-y-6">
+<input type="text" name="username" placeholder="Identity" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-emerald-500 outline-none transition" required>
+<input type="password" name="password" placeholder="Key" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:border-emerald-500 outline-none transition" required>
+<button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 py-5 rounded-2xl text-white font-black text-lg shadow-xl shadow-emerald-500/20 transition-all active:scale-95">AUTHENTICATE</button>
+</form>
+</div>
 </body>
 </html>
