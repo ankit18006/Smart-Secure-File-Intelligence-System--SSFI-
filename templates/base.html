@@ -19,21 +19,9 @@
                 <a href="/analyzer" class="hover:text-emerald-400 transition">Analyzer</a>
                 <a href="/logs" class="hover:text-emerald-400 transition">Audit Logs</a>
             </div>
-            <a href="/logout" class="text-red-500 font-bold text-xs uppercase">Logout</a>
         </div>
     </nav>
-
     <main class="max-w-7xl mx-auto px-6 py-8">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl mb-6">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        
         {% block content %}{% endblock %}
     </main>
 </body>
