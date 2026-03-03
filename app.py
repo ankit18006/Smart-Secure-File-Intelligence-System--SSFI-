@@ -123,19 +123,27 @@ def delete_file(filename):
 @app.route('/analyzer')
 def analyzer():
     if 'user' not in session: return redirect(url_for('index'))
+    
+    # Ensure folder exists
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+        
     all_files = os.listdir(app.config['UPLOAD_FOLDER'])
-    csv_files = [f for f in all_files if f.endswith('.csv')]
+    csv_files = [f for f in all_files if f.lower().endswith('.csv')]
+    
     stats_html, sel = None, request.args.get('file')
     if sel:
         try:
-            df = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], sel))
-            # Real Logic: Pandas Statistical Analysis
-            stats_html = df.describe().to_html(classes='table table-dark table-striped')
-            add_audit("Deep Intelligence Analysis", sel, "Analytics")
-        except:
-            flash("Error analyzing file format.")
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], sel)
+            df = pd.read_csv(file_path)
+            # Sirf numeric columns ka data dikhayenge
+            stats_html = df.describe().to_html(classes='table')
+            add_audit("Data Analysis Run", sel, "Analytics")
+        except Exception as e:
+            flash(f"Error reading CSV: {str(e)}")
+            
     return render_template('analyzer.html', csv_files=csv_files, stats=stats_html, selected_file=sel)
-
+    
 @app.route('/logs')
 def logs():
     if 'user' not in session: return redirect(url_for('index'))
