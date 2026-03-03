@@ -1,39 +1,72 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="space-y-8 animate-in fade-in duration-700">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <h2 class="text-3xl font-bold text-emerald-400"><i class="fas fa-microscope mr-2"></i> Intelligence Analyzer</h2>
-            <p class="text-slate-400 mt-1">Select a dataset to extract statistical insights.</p>
-        </div>
-        <form action="/analyzer" method="GET" class="flex items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/10">
-            <select name="file" class="bg-[#1e293b] text-white text-sm rounded-xl px-4 py-2 outline-none cursor-pointer">
-                <option value="" disabled selected>Choose CSV...</option>
-                {% for f in csv_files %}
-                <option value="{{ f }}">{{ f }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold transition-all">Analyze Now</button>
+<div class="space-y-8">
+    <div class="bg-white/5 border border-white/10 p-8 rounded-3xl shadow-xl">
+        <h2 class="text-3xl font-bold mb-6 text-sky-400"><i class="fas fa-chart-pie mr-2"></i> Intelligence Analyzer</h2>
+        
+        <form action="/analyzer" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
+            <div class="flex-1">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-widest">Select Dataset (CSV Only)</label>
+                <select name="file" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-sky-500 transition">
+                    <option value="" disabled selected>Choose a file to analyze...</option>
+                    {% for f in csv_files %}
+                        <option value="{{ f }}" {% if selected_file == f %}selected{% endif %}>{{ f }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="bg-sky-500 hover:bg-sky-600 px-8 py-4 rounded-2xl font-bold text-white transition-all">
+                Run Intelligence Scan
+            </button>
         </form>
     </div>
 
-    <div class="bg-white/5 rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
-        <div class="p-6 overflow-x-auto min-h-[400px]">
-            {% if stats %}
-                <div class="custom-data-table">{{ stats | safe }}</div>
-            {% else %}
-                <div class="flex flex-col items-center justify-center py-20 text-center text-slate-500">
-                    <i class="fas fa-folder-open text-4xl mb-4"></i>
-                    <h4 class="text-xl font-semibold">No Data Analyzed</h4>
-                </div>
-            {% endif %}
+    {% if stats %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in duration-700">
+        <div class="bg-white/5 border border-white/10 p-6 rounded-3xl overflow-x-auto">
+            <h3 class="text-xl font-bold mb-4 text-slate-300 italic">Matrix Summary</h3>
+            <div class="text-sm font-mono text-emerald-400">
+                {{ stats | safe }}
+            </div>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 p-6 rounded-3xl">
+            <h3 class="text-xl font-bold mb-4 text-slate-300 italic">Visual Intelligence (Bar Chart)</h3>
+            <canvas id="intelligenceChart" class="w-full"></canvas>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('intelligenceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Mean', 'Min', 'Max', 'Std Dev'],
+                datasets: [{
+                    label: 'Dataset Metrics',
+                    data: [12, 5, 20, 3], // Ye dummy hai, real data niche pass hoga
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    borderColor: '#10b981',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+    {% endif %}
 </div>
 
 <style>
-    .custom-data-table table { width: 100%; border-collapse: collapse; color: #cbd5e1; }
-    .custom-data-table th { text-align: left; padding: 1rem; background: rgba(255, 255, 255, 0.05); color: #34d399; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
-    .custom-data-table td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-family: 'JetBrains Mono', monospace; }
+    /* Table Styling for Pandas Output */
+    .table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .table th { text-align: left; padding: 12px; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 </style>
 {% endblock %}
