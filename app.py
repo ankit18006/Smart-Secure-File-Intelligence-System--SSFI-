@@ -1,4 +1,5 @@
 import os
+import json
 import shutil
 import pandas as pd
 from datetime import datetime
@@ -124,25 +125,34 @@ def delete_file(filename):
 def analyzer():
     if 'user' not in session: return redirect(url_for('index'))
     
-    # Ensure folder exists
-    if not os.path.exists(app.config['UPLOAD_FOLDER']):
-        os.makedirs(app.config['UPLOAD_FOLDER'])
-        
     all_files = os.listdir(app.config['UPLOAD_FOLDER'])
     csv_files = [f for f in all_files if f.lower().endswith('.csv')]
     
     stats_html, sel = None, request.args.get('file')
+    chart_labels, chart_values = [], []
+
     if sel:
         try:
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], sel)
             df = pd.read_csv(file_path)
-            # Sirf numeric columns ka data dikhayenge
             stats_html = df.describe().to_html(classes='table')
-            add_audit("Data Analysis Run", sel, "Analytics")
-        except Exception as e:
-            flash(f"Error reading CSV: {str(e)}")
             
-    return render_template('analyzer.html', csv_files=csv_files, stats=stats_html, selected_file=sel)
+            # Real Value Extraction: Sirf numeric columns ka mean (average) nikalna
+            numeric_df = df.select_dtypes(include=['number'])
+            if not numeric_df.empty:
+                chart_labels = numeric_df.columns.tolist()
+                chart_values = numeric_df.mean().tolist()
+            
+            add_audit("Real Data Scanned", sel, "Analytics")
+        except Exception as e:
+            flash(f"Error: {str(e)}")
+            
+    return render_template('analyzer.html', 
+                           csv_files=csv_files, 
+                           stats=stats_html, 
+                           selected_file=sel,
+                           labels=json.dumps(chart_labels),
+                           values=json.dumps(chart_values))
     
 @app.route('/logs')
 def logs():
