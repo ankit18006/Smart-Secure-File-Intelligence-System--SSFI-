@@ -1,27 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="space-y-6 animate-in slide-in-from-bottom duration-500">
-    <div class="flex justify-between items-center">
-        <div>
-            <h2 class="text-3xl font-bold text-amber-400"><i class="fas fa-terminal mr-2"></i> Intelligence Monitoring</h2>
-            <p class="text-slate-400 mt-1">Real-time security event logs.</p>
-        </div>
-        <div class="flex items-center gap-2 bg-amber-400/10 px-4 py-2 rounded-full border border-amber-400/20">
-            <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Live Stream</span>
-        </div>
-    </div>
 
-    <div class="bg-[#050505] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-        <div class="p-8 font-mono text-sm h-[500px] overflow-y-auto space-y-3 custom-scrollbar">
-            {% for log in audits %}
-            <div class="flex gap-4 group">
-                <span class="text-slate-600">[{{ log.timestamp.strftime('%H:%M:%S') }}]</span>
-                <span class="{% if log.category == 'Security' %}text-red-400{% else %}text-sky-400{% endif %} font-bold">[{{ log.category | upper }}]</span>
-                <span class="text-slate-300">{{ log.action }}</span>
-                {% if log.filename != 'N/A' %}<span class="text-emerald-500/80 italic">target: {{ log.filename }}</span>{% endif %}
-            </div>
-            {% endfor %}
+<div class="space-y-6 animate-in slide-in-from-bottom duration-500">
+<div class="flex justify-between items-center bg-white/5 p-6 rounded-3xl border border-white/10">
+<div>
+<h2 class="text-3xl font-bold text-amber-400"><i class="fas fa-terminal mr-2"></i> Audit Logs</h2>
+<p class="text-slate-400 mt-1">Real-time system monitoring.</p>
+</div>
+<div class="bg-amber-400/10 px-4 py-2 rounded-full text-amber-400 text-xs font-bold tracking-widest">
+LIVE MONITORING
+</div>
+</div>
+
+<div class="bg-black rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+    <div class="p-8 font-mono text-xs md:text-sm h-[550px] overflow-y-auto space-y-3">
+        {% for log in audits %}
+        <div class="flex flex-col md:flex-row gap-2 md:gap-6 border-b border-white/5 pb-2">
+            <span class="text-slate-600 whitespace-nowrap">[{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}]</span>
+            <span class="{% if log.category == 'Security' %}text-red-400{% else %}text-sky-400{% endif %} font-bold">[{{ log.category | upper }}]</span>
+            <span class="text-slate-300">{{ log.action }}</span>
+            {% if log.filename and log.filename != 'N/A' %}
+                <span class="text-emerald-500/50 italic ml-auto">ref: {{ log.filename }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="flex gap-4 animate-pulse pt-4">
+            <span class="text-slate-700">[{{ now }}]</span>
+            <span class="text-amber-500/50 font-bold">[SCANNING]</span>
+            <span class="text-slate-600 italic">Listening for events...</span>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}
