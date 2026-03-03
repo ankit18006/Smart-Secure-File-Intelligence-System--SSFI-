@@ -1,10 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="space-y-8">
+<div id="reportContent" class="space-y-8">
     <div class="bg-white/5 border border-white/10 p-8 rounded-3xl shadow-xl">
-        <h2 class="text-3xl font-bold mb-6 text-sky-400"><i class="fas fa-chart-pie mr-2"></i> Intelligence Analyzer</h2>
+        <div class="flex justify-between items-start">
+            <div>
+                <h2 class="text-3xl font-bold mb-2 text-sky-400">
+                    <i class="fas fa-chart-pie mr-2"></i> Intelligence Analyzer
+                </h2>
+                <p class="text-slate-400 text-sm uppercase tracking-widest font-bold">Secure Enterprise Report</p>
+            </div>
+            {% if stats %}
+            <button onclick="generatePDF()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20">
+                <i class="fas fa-file-pdf mr-2"></i> Export PDF
+            </button>
+            {% endif %}
+        </div>
         
-        <form action="/analyzer" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
+        <form action="/analyzer" method="GET" class="mt-8 flex flex-col md:flex-row gap-4 items-end no-print">
             <div class="flex-1">
                 <label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-widest">Select Dataset (CSV Only)</label>
                 <select name="file" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-sky-500 transition">
@@ -24,49 +36,85 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in duration-700">
         <div class="bg-white/5 border border-white/10 p-6 rounded-3xl overflow-x-auto">
             <h3 class="text-xl font-bold mb-4 text-slate-300 italic">Matrix Summary</h3>
-            <div class="text-sm font-mono text-emerald-400">
+            <div id="statsTable" class="text-sm font-mono text-emerald-400">
                 {{ stats | safe }}
             </div>
         </div>
 
         <div class="bg-white/5 border border-white/10 p-6 rounded-3xl">
-            <h3 class="text-xl font-bold mb-4 text-slate-300 italic">Visual Intelligence (Bar Chart)</h3>
-            <canvas id="intelligenceChart" class="w-full"></canvas>
+            <h3 class="text-xl font-bold mb-4 text-slate-300 italic">Visual Intelligence</h3>
+            <div class="relative h-[300px]">
+                <canvas id="intelligenceChart"></canvas>
+            </div>
         </div>
     </div>
+    {% endif %}
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+    // 1. Real Chart Data Logic
+    const labels = {{ labels | safe if labels else '[]' }};
+    const values = {{ values | safe if values else '[]' }};
+
+    if (labels.length > 0) {
         const ctx = document.getElementById('intelligenceChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Mean', 'Min', 'Max', 'Std Dev'],
+                labels: labels,
                 datasets: [{
-                    label: 'Dataset Metrics',
-                    data: [12, 5, 20, 3], // Ye dummy hai, real data niche pass hoga
-                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                    borderColor: '#10b981',
+                    label: 'Mean Value (Average)',
+                    data: values,
+                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                    borderColor: '#0ea5e9',
                     borderWidth: 2,
                     borderRadius: 8
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8' } } },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    x: { grid: { display: false } }
+                    y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { ticks: { color: '#64748b' }, grid: { display: false } }
                 }
             }
         });
-    </script>
-    {% endif %}
-</div>
+    }
+
+    // 2. PDF Generation Logic
+    function generatePDF() {
+        const element = document.getElementById('reportContent');
+        const opt = {
+            margin: 10,
+            filename: 'SSFI_Analysis_Report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, backgroundColor: '#020617' },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+        
+        // Hide form before taking screenshot
+        document.querySelector('.no-print').style.display = 'none';
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Show form again
+            document.querySelector('.no-print').style.display = 'flex';
+        });
+    }
+</script>
 
 <style>
-    /* Table Styling for Pandas Output */
     .table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    .table th { text-align: left; padding: 12px; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .table th { text-align: left; padding: 12px; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; }
+    .table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #10b981; }
+    
+    /* PDF print optimization */
+    @media print {
+        .no-print { display: none !important; }
+    }
 </style>
 {% endblock %}
