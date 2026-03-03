@@ -1,15 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="p-8 bg-white/5 rounded-3xl border border-white/10">
-    <h2 class="text-3xl font-bold mb-6 text-emerald-400">Welcome to Dashboard</h2>
-    <form action="/upload" method="POST" enctype="multipart/form-data" class="mb-8">
-        <input type="file" name="file" class="bg-white/10 p-4 rounded-xl mb-4 block w-full">
-        <button type="submit" class="bg-emerald-500 px-6 py-3 rounded-xl font-bold">Upload & Secure</button>
-    </form>
-    <div class="space-y-2">
-        {% for file in files %}
-        <div class="p-4 bg-white/5 rounded-xl border border-white/5 font-mono">{{ file }}</div>
-        {% endfor %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-1 space-y-6">
+        <div class="bg-white/5 border border-white/10 p-8 rounded-3xl shadow-xl">
+            <h3 class="text-2xl font-bold mb-4">Secure Upload</h3>
+            <form action="/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div class="border-2 border-dashed border-white/10 rounded-2xl p-6 text-center hover:border-emerald-500/50 transition cursor-pointer">
+                    <input type="file" name="file" class="hidden" id="fileInput" onchange="this.form.submit()">
+                    <label for="fileInput" class="cursor-pointer">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-emerald-500 mb-2"></i>
+                        <p class="text-sm text-slate-400">Click to upload or drag & drop</p>
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="bg-white/5 border border-white/10 rounded-3xl overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-white/5 text-slate-400 text-xs uppercase tracking-widest">
+                    <tr>
+                        <th class="px-6 py-4">File Name</th>
+                        <th class="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for file in files %}
+                    <tr class="hover:bg-white/[0.02]">
+                        <td class="px-6 py-4 font-mono text-sm">{{ file }}</td>
+                        <td class="px-6 py-4 text-right space-x-3">
+                            <button class="text-emerald-400 hover:text-emerald-300"><i class="fas fa-lock"></i></button>
+                            <button class="text-sky-400 hover:text-sky-300"><i class="fas fa-history"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}
