@@ -1,53 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-
-<div class="space-y-8">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="glass-card p-8 rounded-3xl border border-white/10">
-<h2 class="text-2xl font-bold mb-4">Secure File Intake</h2>
-<form action="/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
-<div class="border-2 border-dashed border-white/10 rounded-2xl p-10 text-center hover:border-emerald-500/50 transition relative">
-<input type="file" name="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="this.form.submit()">
-<i class="fas fa-file-shield text-5xl text-emerald-500 mb-4"></i>
-<p class="text-slate-400">Click or Drag & Drop to Secure File</p>
-</div>
-</form>
-</div>
-
-    <div class="glass-card p-8 rounded-3xl border border-white/10">
-        <h2 class="text-2xl font-bold mb-4 text-sky-400">Intelligence Summary</h2>
-        <div class="space-y-4">
-            <div class="flex justify-between p-4 bg-white/5 rounded-2xl">
-                <span>Total Secured Objects</span>
-                <span class="font-mono font-bold">{{ files|length }}</span>
-            </div>
-            <div class="flex justify-between p-4 bg-white/5 rounded-2xl">
-                <span>System Status</span>
-                <span class="text-emerald-400 font-bold">ACTIVE</span>
-            </div>
-        </div>
+<div class="p-8 bg-white/5 rounded-3xl border border-white/10">
+    <h2 class="text-3xl font-bold mb-6 text-emerald-400">Welcome to Dashboard</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data" class="mb-8">
+        <input type="file" name="file" class="bg-white/10 p-4 rounded-xl mb-4 block w-full">
+        <button type="submit" class="bg-emerald-500 px-6 py-3 rounded-xl font-bold">Upload & Secure</button>
+    </form>
+    <div class="space-y-2">
+        {% for file in files %}
+        <div class="p-4 bg-white/5 rounded-xl border border-white/5 font-mono">{{ file }}</div>
+        {% endfor %}
     </div>
-</div>
-
-<div class="bg-white/5 rounded-3xl border border-white/10 overflow-hidden">
-    <table class="w-full text-left">
-        <thead class="bg-white/5 text-slate-400 text-xs font-bold uppercase">
-            <tr>
-                <th class="px-6 py-4">Filename</th>
-                <th class="px-6 py-4 text-right">Protection Layers</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-white/5">
-            {% for file in files %}
-            <tr class="hover:bg-white/[0.02] transition">
-                <td class="px-6 py-4 font-mono text-sm">{{ file }}</td>
-                <td class="px-6 py-4 text-right">
-                    <span class="bg-emerald-500/10 text-emerald-500 text-[10px] font-black px-2 py-1 rounded">AES-256</span>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 </div>
 {% endblock %}
