@@ -1,47 +1,47 @@
+{% extends "base.html" %}
+(Note: Base file hamesha sabse upar hoti hai, ye rahi uski body)
+
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSFI Enterprise | Secure Intelligence</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .glass-nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .active-link { color: #10b981; border-bottom: 2px solid #10b981; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSFI | Secure System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+body { background-color: #020617; color: #f8fafc; }
+.glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); }
+</style>
 </head>
-<body>
-    <nav class="glass-nav sticky top-0 z-50 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-emerald-500 p-2 rounded-lg">
-                    <i class="fas fa-shield-halved text-white"></i>
-                </div>
-                <span class="text-xl font-bold tracking-tighter">SSFI <span class="text-emerald-500">SYSTEM</span></span>
-            </div>
-            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-                <a href="/dashboard" class="hover:text-emerald-400 transition">Dashboard</a>
-                <a href="/analyzer" class="hover:text-emerald-400 transition">Intelligence Analyzer</a>
-                <a href="/logs" class="hover:text-emerald-400 transition">Admin Audit</a>
-            </div>
-            <a href="/logout" class="text-red-400 text-sm font-bold"><i class="fas fa-power-off"></i></a>
-        </div>
-    </nav>
+<body class="min-h-screen">
+<nav class="border-b border-white/10 px-6 py-4 glass-card sticky top-0 z-50">
+<div class="max-w-7xl mx-auto flex justify-between items-center">
+<div class="flex items-center gap-2">
+<i class="fas fa-shield-virus text-emerald-500 text-2xl"></i>
+<span class="text-xl font-bold tracking-tighter uppercase">SSFI Enterprise</span>
+</div>
+<div class="hidden md:flex gap-8 text-sm font-semibold text-slate-400">
+<a href="/dashboard" class="hover:text-emerald-400 transition">Dashboard</a>
+<a href="/analyzer" class="hover:text-emerald-400 transition">Intelligence Analyzer</a>
+<a href="/logs" class="hover:text-emerald-400 transition">Admin Audit</a>
+</div>
+<a href="/logout" class="bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-xs font-bold border border-red-500/20">LOGOUT</a>
+</div>
+</nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-8">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl mb-6">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        
-        {% block content %}{% endblock %}
-    </main>
+<main class="max-w-7xl mx-auto px-6 py-8">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 px-4 py-3 rounded-xl mb-6 animate-pulse">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
 </body>
 </html>
